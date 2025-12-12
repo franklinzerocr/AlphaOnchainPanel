@@ -7,6 +7,8 @@ import { WalletConnectButton } from "@/components/WalletConnectButton";
 import { useTokenBalances } from "@/hooks/useTokenBalances";
 import { TokenTable } from "@/components/TokenTable";
 import { PortfolioCard } from "@/components/PortfolioCard";
+import { NetworkStatusCard } from "@/components/NetworkStatusCard";
+
 
 export function DashboardClient() {
   const { isConnected, chainOk, isLoading, error, rows } = useTokenBalances();
@@ -50,9 +52,10 @@ export function DashboardClient() {
         </div>
 
         <div className="md:col-span-5">
-          <Card title="Network status" subtitle="Block number, gas estimate, RPC health">
-            <div className="text-xs text-slate-400">Planned: NetworkStatusCard</div>
+          <Card title="Network status" subtitle="Block number, gas price, RPC health">
+            <NetworkStatusCard />
           </Card>
+
         </div>
       </div>
     </LayoutShell>
