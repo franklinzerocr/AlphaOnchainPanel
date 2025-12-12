@@ -1,5 +1,6 @@
 // src/app/page.tsx
 import { Card } from "@/components/Card";
+import { WalletConnectButton } from "@/components/WalletConnectButton";
 import { LayoutShell } from "@/components/LayoutShell";
 
 export default function HomePage() {
@@ -11,9 +12,9 @@ export default function HomePage() {
             title="Wallet"
             subtitle="Connect wallet and show address / chain / status"
           >
-            <div className="text-xs text-slate-400">
-              Next step: WalletConnectButton
-            </div>
+            <Card title="Wallet" subtitle="Connect wallet and show address / chain / status">
+              <WalletConnectButton />
+            </Card>
           </Card>
         </div>
 

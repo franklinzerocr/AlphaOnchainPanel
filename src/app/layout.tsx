@@ -1,6 +1,6 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import "@/styles/globals.css";
+import { Providers } from "@/app/providers";
 
 export const metadata: Metadata = {
   title: "AlphaOnchain Panel",
@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-slate-950 text-slate-50 antialiased">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
