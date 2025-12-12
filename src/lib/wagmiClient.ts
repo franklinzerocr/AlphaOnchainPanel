@@ -1,7 +1,7 @@
 // src/lib/wagmiClient.ts
 import { createConfig, http } from "wagmi";
 import { mainnet, sepolia } from "wagmi/chains";
-import { injected } from "wagmi/connectors";
+import { injected } from "@wagmi/connectors";
 
 export const wagmiConfig = createConfig({
   chains: [sepolia, mainnet],
