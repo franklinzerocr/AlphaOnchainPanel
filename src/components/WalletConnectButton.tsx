@@ -46,8 +46,7 @@ export function WalletConnectButton() {
           <p className="text-xs text-red-400 break-words">{error.message}</p>
         ) : (
           <p className="text-xs text-slate-400">
-            Uses injected wallet by default (MetaMask). WalletConnect available
-            if configured.
+            Uses injected wallet (MetaMask, Brave, etc).
           </p>
         )}
       </div>
