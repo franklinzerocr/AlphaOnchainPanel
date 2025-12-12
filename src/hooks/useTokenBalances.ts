@@ -1,4 +1,3 @@
-// src/hooks/useTokenBalances.ts
 "use client";
 
 import { useMemo } from "react";
@@ -13,19 +12,19 @@ export type TokenBalanceRow = {
   decimals: number;
   address?: `0x${string}`;
   amount?: bigint;
-  // MVP: USD only for stablecoins (usdHint=1). ETH pricing comes later.
   usdHint?: number;
 };
 
 export function useTokenBalances() {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const chainId = useChainId();
 
-  const enabled = Boolean(address) && chainId === sepolia.id;
+  const chainOk = chainId === sepolia.id;
 
+  // ETH should load on any chain when connected
   const eth = useBalance({
     address,
-    query: { enabled },
+    query: { enabled: Boolean(address) },
   });
 
   const erc20Tokens = useMemo(
@@ -43,39 +42,41 @@ export function useTokenBalances() {
     }));
   }, [address, erc20Tokens]);
 
+  // ERC20 reads only on Sepolia (because addresses are Sepolia)
   const reads = useReadContracts({
     contracts,
-    query: { enabled: enabled && contracts.length > 0 },
+    query: { enabled: Boolean(address) && chainOk && contracts.length > 0 },
   });
 
   const rows: TokenBalanceRow[] = useMemo(() => {
-    const base: TokenBalanceRow[] = [
-      {
-        symbol: "ETH",
-        name: "Ether",
-        decimals: 18,
-        amount: eth.data?.value,
-      },
-      ...erc20Tokens.map((t, idx) => {
-        const r = reads.data?.[idx];
-        const amount = r?.status === "success" ? (r.result as bigint) : undefined;
-        return {
-          symbol: t.symbol,
-          name: t.name,
-          decimals: t.decimals,
-          address: t.address,
-          amount,
-          usdHint: t.usdHint,
-        };
-      }),
-    ];
-    return base;
+    const ethRow: TokenBalanceRow = {
+      symbol: "ETH",
+      name: "Ether",
+      decimals: 18,
+      amount: eth.data?.value,
+    };
+
+    const tokenRows: TokenBalanceRow[] = erc20Tokens.map((t, idx) => {
+      const r = reads.data?.[idx];
+      const amount = r?.status === "success" ? (r.result as bigint) : undefined;
+      return {
+        symbol: t.symbol,
+        name: t.name,
+        decimals: t.decimals,
+        address: t.address,
+        amount,
+        usdHint: t.usdHint,
+      };
+    });
+
+    return [ethRow, ...tokenRows];
   }, [erc20Tokens, reads.data, eth.data?.value]);
 
   return {
-    enabled,
-    chainOk: chainId === sepolia.id,
-    isLoading: enabled && (eth.isLoading || reads.isLoading),
+    isConnected,
+    address,
+    chainOk,
+    isLoading: Boolean(address) && (eth.isLoading || (chainOk && reads.isLoading)),
     error: eth.error ?? reads.error,
     rows,
   };

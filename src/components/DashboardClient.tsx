@@ -9,7 +9,7 @@ import { TokenTable } from "@/components/TokenTable";
 import { PortfolioCard } from "@/components/PortfolioCard";
 
 export function DashboardClient() {
-  const { enabled, chainOk, isLoading, error, rows } = useTokenBalances();
+  const { isConnected, chainOk, isLoading, error, rows } = useTokenBalances();
 
   return (
     <LayoutShell>
@@ -22,20 +22,24 @@ export function DashboardClient() {
 
         <div className="md:col-span-7">
           <Card title="Portfolio" subtitle="ETH + ERC20 balances (Sepolia)">
-            {!enabled ? (
+            {!isConnected ? (
               <div className="text-xs text-slate-400">Connect your wallet to load balances.</div>
-            ) : !chainOk ? (
-              <div className="text-xs text-slate-400">Switch to Sepolia to read token balances.</div>
             ) : error ? (
               <div className="text-xs text-red-400 break-words">{error.message}</div>
             ) : isLoading ? (
               <div className="text-xs text-slate-400">Loading balances…</div>
             ) : (
               <div className="space-y-3">
+                {!chainOk ? (
+                  <div className="text-xs text-slate-400">
+                    ERC20 balances are configured for <b>Sepolia</b>. Switch network to see USDC/DAI.
+                  </div>
+                ) : null}
                 <PortfolioCard rows={rows} />
                 <TokenTable rows={rows} />
               </div>
             )}
+
           </Card>
         </div>
 
