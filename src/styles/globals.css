@@ -24,3 +24,73 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+:root {
+  --bg0: 10 12 20;          /* deep navy */
+  --bg1: 8 10 18;
+  --panel: 255 255 255;
+  --stroke: 255 255 255;
+  --text: 226 232 240;      /* slate-200 */
+  --muted: 148 163 184;     /* slate-400 */
+  --brand: 56 189 248;      /* sky-400 */
+  --brand2: 167 139 250;    /* violet-400 */
+  --ok: 16 185 129;         /* emerald-500 */
+  --warn: 245 158 11;       /* amber-500 */
+}
+
+html, body {
+  background: rgb(var(--bg0));
+  color: rgb(var(--text));
+}
+
+.web3-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.web3-bg::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(60% 60% at 20% 10%, rgba(var(--brand), 0.25), transparent 60%),
+    radial-gradient(55% 55% at 90% 20%, rgba(var(--brand2), 0.22), transparent 60%),
+    radial-gradient(50% 50% at 60% 90%, rgba(34, 211, 238, 0.12), transparent 55%),
+    linear-gradient(180deg, rgb(var(--bg1)) 0%, rgb(var(--bg0)) 60%, rgb(var(--bg0)) 100%);
+  filter: saturate(1.1);
+}
+
+.web3-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at 50% 10%, black 0%, transparent 55%);
+  opacity: 0.35;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+.floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+

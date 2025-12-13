@@ -82,12 +82,11 @@ export function SwapPanel({ onSwapSuccess }: SwapPanelProps) {
       {!isConnected ? (
         <div className="text-xs text-slate-500">Connect wallet to enable swap.</div>
       ) : mode !== "testnet" ? (
-        <div className="text-xs text-amber-300">
-          Mainnet mode: swap disabled. Switch to Testnet.
-        </div>
+        <div className="text-xs text-amber-300">Mainnet: swaps disabled.</div>
       ) : !chainOk ? (
-        <div className="text-xs text-slate-500">Switch your wallet to Sepolia.</div>
+        <div className="text-xs text-slate-500">Switch wallet to Sepolia.</div>
       ) : null}
+
 
       <div className="grid grid-cols-2 gap-3">
         <button
@@ -116,7 +115,7 @@ export function SwapPanel({ onSwapSuccess }: SwapPanelProps) {
         <div className="text-xs text-slate-500">Checking pool & quoting…</div>
       ) : state.status === "ready" ? (
         <div className="text-xs text-slate-500">
-          Quote ready. Min out applied (1% slippage).
+          Quote ready (minOut includes 1% slippage).
         </div>
       ) : state.status === "pending" ? (
         <div className="text-xs text-slate-500 break-words">Pending: {state.hash}</div>
