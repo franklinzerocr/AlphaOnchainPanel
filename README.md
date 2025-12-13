@@ -2,29 +2,19 @@
 
 <p align="center">
 
-  <strong>AlphaOnchain Panel</strong><br/>
-
-  A minimal Web3 operations dashboard focused on wallet connectivity, on-chain data,
-
-  and clean operational UI.
+A minimal Web3 operations dashboard focused on wallet connectivity, on-chain data, and clean operational UI.
 
 </p>
 
 <p align="center">
  
-  <img src="https://github.com/franklinzerocr/alphaonchainpanel/actions/workflows/ci.yml/badge.svg?branch=main" />
-
-  <img src="https://img.shields.io/badge/Next.js-15-black" />
-
-  <img src="https://img.shields.io/badge/TypeScript-strict-blue" />
-
-  <img src="https://img.shields.io/badge/Wagmi-2.x-purple" />
-
-  <img src="https://img.shields.io/badge/Viem-2.x-green" />
-
-  <img src="https://img.shields.io/badge/TailwindCSS-3.x-cyan" />
-
-  <img src="https://img.shields.io/badge/Tests-Vitest-success" />
+<img src="https://github.com/franklinzerocr/alphaonchainpanel/actions/workflows/ci.yml/badge.svg?branch=main" />
+<img src="https://img.shields.io/badge/Next.js-15-black" />
+<img src="https://img.shields.io/badge/TypeScript-strict-blue" />
+<img src="https://img.shields.io/badge/Wagmi-2.x-purple" />
+<img src="https://img.shields.io/badge/Viem-2.x-green" />
+<img src="https://img.shields.io/badge/TailwindCSS-3.x-cyan" />
+<img src="https://img.shields.io/badge/Tests-Vitest-success" />
 
 </p>
 
