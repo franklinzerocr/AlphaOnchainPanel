@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   useAccount,
   useConnect,
@@ -9,6 +9,8 @@ import {
   useSwitchChain,
 } from "wagmi";
 import { sepolia, mainnet } from "wagmi/chains";
+import { useIsClient } from "@/hooks/useIsClient";
+
 
 function shortAddress(addr?: string) {
   if (!addr) return "";
@@ -23,9 +25,8 @@ function chainLabel(chainId?: number) {
 }
 
 export function WalletConnectButton() {
-  // Prevent SSR/client mismatch: render a stable placeholder until mounted.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+
+  const isClient = useIsClient();
 
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
@@ -35,7 +36,7 @@ export function WalletConnectButton() {
 
   const { switchChain, isPending: isSwitching } = useSwitchChain();
 
-  if (!mounted) {
+  if (!isClient) {
     return (
       <div className="space-y-3">
         <button

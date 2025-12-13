@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card } from "@/components/Card";
 import { LayoutShell } from "@/components/LayoutShell";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
@@ -9,12 +9,11 @@ import { TokenTable } from "@/components/TokenTable";
 import { PortfolioCard } from "@/components/PortfolioCard";
 import { NetworkStatusCard } from "@/components/NetworkStatusCard";
 import { SwapPanel } from "@/components/SwapPanel";
+import { useIsClient } from "@/hooks/useIsClient";
+
 
 export function DashboardClient() {
-  // Prevent SSR/client hydration mismatch: render a stable placeholder until mounted.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
+  const isClient = useIsClient();
   const { isConnected, chainOk, isLoading, error, rows } = useTokenBalances();
 
   return (
@@ -31,7 +30,7 @@ export function DashboardClient() {
 
         <div className="md:col-span-7">
           <Card title="Portfolio" subtitle="ETH + ERC20 balances (Sepolia)">
-            {!mounted ? (
+            {!isClient ? (
               <div className="text-xs text-slate-400">Loading balances…</div>
             ) : !isConnected ? (
               <div className="text-xs text-slate-400">

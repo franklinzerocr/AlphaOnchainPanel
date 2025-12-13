@@ -1,12 +1,12 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
+ 
+import React from "react";
 import { useSwap } from "@/hooks/useSwap";
+import { useIsClient } from "@/hooks/useIsClient";
+
 
 export function SwapPanel() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
+  const isClient = useIsClient();
   const {
     amountEth,
     setAmountEth,
@@ -19,7 +19,7 @@ export function SwapPanel() {
   } = useSwap();
 
   // Stable SSR + first client render
-  if (!mounted) {
+  if (!isClient) {
     return (
       <div className="space-y-3">
         <div className="space-y-2">
