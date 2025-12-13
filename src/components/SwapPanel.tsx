@@ -7,8 +7,16 @@ export function SwapPanel() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const { amountEth, setAmountEth, state, quote, swap, chainOk, isConnected } =
-    useSwap();
+  const {
+    amountEth,
+    setAmountEth,
+    state,
+    quote,
+    swap,
+    chainOk,
+    isConnected,
+    mode,
+  } = useSwap();
 
   // Stable SSR + first client render
   if (!mounted) {
@@ -47,9 +55,15 @@ export function SwapPanel() {
   }
 
   const busy = state.status === "checking" || state.status === "pending";
-  const canQuote = Boolean(isConnected && chainOk && !busy);
+  const canQuote = Boolean(
+    isConnected && chainOk && mode === "testnet" && !busy
+  );
   const canSwap = Boolean(
-    isConnected && chainOk && state.status === "ready" && !busy
+    isConnected &&
+      chainOk &&
+      mode === "testnet" &&
+      state.status === "ready" &&
+      !busy
   );
 
   return (
@@ -62,8 +76,20 @@ export function SwapPanel() {
           inputMode="decimal"
           value={amountEth}
           onChange={(e) => setAmountEth(e.target.value)}
+          disabled={busy}
         />
       </div>
+
+      {/* Mode / chain hints (before status) */}
+      {!isConnected ? (
+        <div className="text-xs text-slate-500">Connect wallet to enable swap.</div>
+      ) : mode !== "testnet" ? (
+        <div className="text-xs text-amber-300">
+          Mainnet mode: swap disabled. Switch to Testnet.
+        </div>
+      ) : !chainOk ? (
+        <div className="text-xs text-slate-500">Switch your wallet to Sepolia.</div>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-3">
         <button
@@ -72,7 +98,7 @@ export function SwapPanel() {
           disabled={!canQuote}
           className="rounded-xl border border-slate-800/70 bg-slate-900/40 px-4 py-2 text-sm font-medium hover:bg-slate-900/60 disabled:opacity-50"
         >
-          Get Quote
+          {state.status === "checking" ? "Quoting…" : "Get Quote"}
         </button>
 
         <button
@@ -81,7 +107,7 @@ export function SwapPanel() {
           disabled={!canSwap}
           className="rounded-xl border border-slate-800/70 bg-slate-900/40 px-4 py-2 text-sm font-medium hover:bg-slate-900/60 disabled:opacity-50"
         >
-          Swap to USDC
+          {state.status === "pending" ? "Swapping…" : "Swap to USDC"}
         </button>
       </div>
 
@@ -105,7 +131,7 @@ export function SwapPanel() {
           Success: {state.hash}
         </div>
       ) : (
-        <div className="text-xs text-red-400">{state.message}</div>
+        <div className="text-xs text-red-400 break-words">{state.message}</div>
       )}
     </div>
   );

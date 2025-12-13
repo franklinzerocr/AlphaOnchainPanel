@@ -67,8 +67,6 @@ export function useSwap() {
       setState({ status: "error", message: "Connect wallet first." });
       return false;
     }
-
-    // Safety: swap only in Testnet mode (even if mainnet is enabled elsewhere)
     if (mode !== "testnet") {
       setState({
         status: "error",
@@ -77,12 +75,10 @@ export function useSwap() {
       });
       return false;
     }
-
     if (!chainOk) {
       setState({ status: "error", message: "Switch your wallet to Sepolia." });
       return false;
     }
-
     return true;
   }
 
@@ -106,7 +102,6 @@ export function useSwap() {
     setState({ status: "checking" });
 
     try {
-      // 1) Check pool exists (factory.getPair)
       const pair = await publicClient!.readContract({
         abi: uniswapV2FactoryAbi,
         address: UNISWAP_V2_SEPOLIA.factory,
@@ -126,7 +121,6 @@ export function useSwap() {
         return;
       }
 
-      // 2) Quote getAmountsOut
       const amounts = await publicClient!.readContract({
         abi: uniswapV2RouterAbi,
         address: UNISWAP_V2_SEPOLIA.router,
@@ -149,13 +143,12 @@ export function useSwap() {
     const value = parseAmountOrSetError();
     if (value === null) return;
 
-    // Need a quote first (so we have minOut)
     if (state.status !== "ready" || state.minOut === undefined) {
-      await quote();
+      setState({ status: "error", message: "Get a quote first." });
       return;
     }
 
-    const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 10); // 10 min
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 10);
 
     try {
       const hash = await writeContractAsync({
@@ -176,11 +169,9 @@ export function useSwap() {
   }
 
   return {
-    // used by UI
+    mode,
     chainOk,
     isConnected,
-    mode,
-
     amountEth,
     setAmountEth,
     state,
