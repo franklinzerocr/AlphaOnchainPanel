@@ -11,6 +11,7 @@ import { NetworkStatusCard } from "@/components/NetworkStatusCard";
 import { SwapPanel } from "@/components/SwapPanel";
 import { useIsClient } from "@/hooks/useIsClient";
 import { PortfolioAllocationChart } from "@/components/PortfolioAllocationChart";
+import { DEMO_PORTFOLIO } from "@/lib/demoPortfolio";
 
 
 
@@ -18,6 +19,9 @@ export function DashboardClient() {
   const isClient = useIsClient();
   const [justUpdated, setJustUpdated] = useState(false);
   const { isConnected, chainOk, isLoading, error, rows, refetch } = useTokenBalances();
+  const hasRealData = rows.some((r) => r.usdValue > 0);
+  const displayRows = hasRealData ? rows : DEMO_PORTFOLIO;
+
 
 
   return (
@@ -61,9 +65,15 @@ export function DashboardClient() {
                 {justUpdated ? (
                   <div className="text-xs text-emerald-400">Updated!</div>
                 ) : null} 
-                <PortfolioCard rows={rows} />
-                <PortfolioAllocationChart rows={rows} />
-                <TokenTable rows={rows} />
+                
+                {!hasRealData && (
+                  <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs text-amber-300">
+                    Demo data · Connect wallet with funds to see real balances
+                  </div>
+                )}
+                <PortfolioCard rows={displayRows} />
+                <PortfolioAllocationChart rows={displayRows} />
+                <TokenTable rows={displayRows} />
               </div>
             )}
           </Card>
