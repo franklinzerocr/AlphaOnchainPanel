@@ -1,42 +1,63 @@
-// src/components/PortfolioCard.tsx
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import type { TokenBalanceRow } from "@/hooks/useTokenBalances";
-import { formatTokenAmount } from "@/lib/format";
+
+function fmt(n: number) {
+  return Number.isFinite(n) ? n.toFixed(2) : "0.00";
+}
+
+// Safely extract a numeric USD value from any row shape.
+// Supports: row.usdValue (number) or row.usd (number or string like "$12.34")
+function getUsd(row: TokenBalanceRow): number {
+  const anyRow = row as unknown as {
+    usdValue?: unknown;
+    usd?: unknown;
+  };
+
+  if (typeof anyRow.usdValue === "number" && Number.isFinite(anyRow.usdValue)) {
+    return anyRow.usdValue;
+  }
+
+  if (typeof anyRow.usd === "number" && Number.isFinite(anyRow.usd)) {
+    return anyRow.usd;
+  }
+
+  if (typeof anyRow.usd === "string") {
+    const cleaned = anyRow.usd.replace(/[^0-9.-]/g, "");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  return 0;
+}
 
 export function PortfolioCard({ rows }: { rows: TokenBalanceRow[] }) {
-  const stables = rows.filter((r) => r.usdHint === 1);
+  const { totalUsd, top } = useMemo(() => {
+    const total = rows.reduce((acc, r) => acc + getUsd(r), 0);
+
+    const topToken =
+      rows
+        .map((r) => ({ symbol: r.symbol, usd: getUsd(r) }))
+        .filter((r) => r.usd > 0)
+        .sort((a, b) => b.usd - a.usd)[0]?.symbol ?? "—";
+
+    return { totalUsd: total, top: topToken };
+  }, [rows]);
 
   return (
-    <div className="space-y-3">
-      <div className="rounded-xl border border-slate-800/60 bg-slate-950/30 p-3">
-        <div className="text-xs text-slate-400">
-          USD (stablecoins only)
-        </div>
-
-        <div className="mt-1 text-sm text-slate-200">
-          {stables.length
-            ? "Derived from USDC/DAI balances"
-            : "—"}
-        </div>
-
-        <div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
-          {stables.map((s) => (
-            <span
-              key={s.symbol}
-              className="rounded-lg border border-slate-800/60 bg-slate-900/30 px-2 py-1"
-            >
-              {s.symbol}: {formatTokenAmount(s.amount, s.decimals, 2)}
-            </span>
-          ))}
+    <div className="grid grid-cols-2 gap-3">
+      <div className="rounded-2xl border border-slate-800/60 bg-slate-950/30 p-3">
+        <div className="text-xs text-slate-400">Portfolio (USD)</div>
+        <div className="mt-1 font-mono text-lg font-semibold">
+          ${fmt(totalUsd)}
         </div>
       </div>
 
-      <p className="text-xs text-slate-500">
-        ETH USD pricing will be added later via a price feed (CoinGecko or an
-        on-chain oracle). MVP avoids hardcoded market prices.
-      </p>
+      <div className="rounded-2xl border border-slate-800/60 bg-slate-950/30 p-3">
+        <div className="text-xs text-slate-400">Top asset</div>
+        <div className="mt-1 text-lg font-semibold">{top}</div>
+      </div>
     </div>
   );
 }

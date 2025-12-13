@@ -20,7 +20,7 @@ export function DashboardClient() {
 
   return (
     <LayoutShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-start">
         <div className="md:col-span-5">
           <Card
             title="Wallet"

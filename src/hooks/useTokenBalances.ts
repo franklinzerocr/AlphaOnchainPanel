@@ -72,18 +72,25 @@ export function useTokenBalances() {
     return [ethRow, ...tokenRows];
   }, [erc20Tokens, reads.data, eth.data?.value]);
 
+  const refetch = async () => {
+    await Promise.all([
+      eth.refetch?.(),
+      chainOk ? reads.refetch?.() : Promise.resolve(),
+    ]);
+  };
+
+  const isLoading =
+    Boolean(address) && (eth.isLoading || (chainOk && reads.isLoading));
+
+  const error = eth.error ?? reads.error ?? null;
+
+
   return {
     isConnected,
-    address,
     chainOk,
-    isLoading: Boolean(address) && (eth.isLoading || (chainOk && reads.isLoading)),
-    error: eth.error ?? reads.error,
+    isLoading,
+    error,
     rows,
-    refetch: async () => {
-      await Promise.all([
-        eth.refetch?.(),
-        chainOk ? reads.refetch?.() : Promise.resolve(),
-      ]);
-    },
+    refetch,
   };
 }

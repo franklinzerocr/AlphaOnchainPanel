@@ -1,31 +1,29 @@
-// src/components/LayoutShell.tsx
+"use client";
+
 import React from "react";
 import { NetworkModeToggle } from "@/components/NetworkModeToggle";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-slate-800/60">
-        <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
-          <div className="flex items-baseline gap-3">
-            <span className="text-sm font-semibold tracking-tight">
+    <div className="min-h-dvh bg-slate-950 text-slate-100">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6">
+        <header className="mb-6 flex items-center justify-between gap-4">
+          <div className="min-w-0">
+            <div className="text-base font-semibold tracking-tight">
               AlphaOnchain Panel
-            </span>
-            <span className="text-xs text-slate-400">
-              Minimal Web3 ops dashboard
-            </span>
+            </div>
+            <div className="text-xs text-slate-400">
+              Minimal Web3 ops dashboard (balances, status, swap)
+            </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="shrink-0">
             <NetworkModeToggle />
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">{children}</main>
-
-      <footer className="mx-auto max-w-6xl px-4 py-8 text-xs text-slate-500">
-        Built with Next.js • TypeScript • Wagmi • viem
-      </footer>
+        {children}
+      </div>
     </div>
   );
 }
