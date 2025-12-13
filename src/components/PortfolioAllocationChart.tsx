@@ -35,15 +35,13 @@ function short(n: number) {
 
 export function PortfolioAllocationChart({ rows }: { rows: TokenBalanceRow[] }) {
   const data = useMemo(() => {
-    const cleaned = rows
-      .map((r) => ({ name: r.symbol, value: getWeight(r) }))
-      .filter((d) => d.value > 0);
+  const cleaned = rows
+    .map((r) => ({ name: r.symbol, value: r.pct }))
+    .filter((d) => d.value > 0);
 
-    // if we got USD values, normalize to 100 for nicer display
-    const sum = cleaned.reduce((a, b) => a + b.value, 0);
-    if (sum <= 0) return [];
-    return cleaned.map((d) => ({ ...d, value: (d.value / sum) * 100 }));
-  }, [rows]);
+  return cleaned;
+}, [rows]);
+
 
   if (data.length === 0) {
     return (
