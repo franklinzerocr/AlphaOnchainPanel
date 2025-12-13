@@ -1,5 +1,6 @@
 // src/components/LayoutShell.tsx
 import React from "react";
+import { NetworkModeToggle } from "@/components/NetworkModeToggle";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   return (
@@ -14,7 +15,9 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
               Minimal Web3 ops dashboard
             </span>
           </div>
-          <div className="text-xs text-slate-500">Sepolia • Mainnet</div>
+          <div className="flex items-center gap-3">
+            <NetworkModeToggle />
+          </div>
         </div>
       </header>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   useAccount,
   useConnect,
@@ -23,6 +23,10 @@ function chainLabel(chainId?: number) {
 }
 
 export function WalletConnectButton() {
+  // Prevent SSR/client mismatch: render a stable placeholder until mounted.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
 
@@ -31,10 +35,26 @@ export function WalletConnectButton() {
 
   const { switchChain, isPending: isSwitching } = useSwitchChain();
 
+  if (!mounted) {
+    return (
+      <div className="space-y-3">
+        <button
+          type="button"
+          className="w-full rounded-xl border border-slate-800/70 bg-slate-900/40 px-4 py-2 text-sm font-medium disabled:opacity-50"
+          disabled
+        >
+          Loading…
+        </button>
+        <p className="text-xs text-slate-400">Uses injected wallet (MetaMask, Brave, etc).</p>
+      </div>
+    );
+  }
+
   if (!isConnected) {
     return (
       <div className="space-y-3">
         <button
+          type="button"
           className="w-full rounded-xl border border-slate-800/70 bg-slate-900/40 px-4 py-2 text-sm font-medium hover:bg-slate-900/60 disabled:opacity-50"
           onClick={() => connect({ connector: connectors[0] })}
           disabled={isPending || connectors.length === 0}
@@ -70,6 +90,7 @@ export function WalletConnectButton() {
 
       <div className="grid grid-cols-2 gap-3">
         <button
+          type="button"
           className="rounded-xl border border-slate-800/70 bg-slate-900/40 px-4 py-2 text-sm font-medium hover:bg-slate-900/60 disabled:opacity-50"
           onClick={() => switchChain({ chainId: sepolia.id })}
           disabled={isSwitching || chainId === sepolia.id}
@@ -78,6 +99,7 @@ export function WalletConnectButton() {
         </button>
 
         <button
+          type="button"
           className="rounded-xl border border-slate-800/70 bg-slate-900/40 px-4 py-2 text-sm font-medium hover:bg-slate-900/60"
           onClick={() => disconnect()}
         >
