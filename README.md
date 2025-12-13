@@ -20,10 +20,11 @@ A minimal Web3 operations dashboard focused on wallet connectivity, on-chain dat
 
 ---
 
-## Screenshots
+## Live Demo & Screenshot
+
+https://alpha-onchain-panel.vercel.app/
 
 ![dashboard1](docs/dashboard1.PNG)
-![dashboard2](docs/dashboard2.PNG)
 
 ---
 
