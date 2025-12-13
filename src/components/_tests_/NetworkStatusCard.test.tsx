@@ -5,20 +5,31 @@ import { describe, it, expect, vi } from "vitest";
 vi.mock("wagmi", async () => {
   return {
     useChainId: () => 11155111,
-    usePublicClient: () => ({ getChainId: vi.fn().mockResolvedValue(11155111) }),
-    useBlockNumber: () => ({ isLoading: false, data: 123n, error: null }),
-    useGasPrice: () => ({ isLoading: false, data: 1000000000n, error: null }), // 1 gwei
+    usePublicClient: () => ({
+      getChainId: vi.fn().mockResolvedValue(11155111),
+    }),
+    useBlockNumber: () => ({
+      isLoading: false,
+      data: 123n,
+      error: null,
+    }),
+    useGasPrice: () => ({
+      isLoading: false,
+      data: 1000000000n, // 1 gwei
+      error: null,
+    }),
   };
 });
 
 import { NetworkStatusCard } from "@/components/NetworkStatusCard";
 
 describe("NetworkStatusCard", () => {
-  it("renders core fields", () => {
+  it("renders core fields", async () => {
     render(<NetworkStatusCard />);
-    expect(screen.getByText("Chain ID")).toBeInTheDocument();
-    expect(screen.getByText("RPC health")).toBeInTheDocument();
-    expect(screen.getByText("Block")).toBeInTheDocument();
-    expect(screen.getByText("Gas price")).toBeInTheDocument();
+
+    expect(await screen.findByText("Chain ID")).toBeInTheDocument();
+    expect(await screen.findByText("RPC health")).toBeInTheDocument();
+    expect(await screen.findByText("Block")).toBeInTheDocument();
+    expect(await screen.findByText("Gas price")).toBeInTheDocument();
   });
 });
