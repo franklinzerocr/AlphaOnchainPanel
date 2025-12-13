@@ -10,6 +10,8 @@ import { PortfolioCard } from "@/components/PortfolioCard";
 import { NetworkStatusCard } from "@/components/NetworkStatusCard";
 import { SwapPanel } from "@/components/SwapPanel";
 import { useIsClient } from "@/hooks/useIsClient";
+import { PortfolioAllocationChart } from "@/components/PortfolioAllocationChart";
+
 
 
 export function DashboardClient() {
@@ -33,7 +35,11 @@ export function DashboardClient() {
         <div className="md:col-span-7">
           <Card title="Portfolio" subtitle="ETH + ERC20 balances (Sepolia)">
             {!isClient ? (
-              <div className="text-xs text-slate-400">Loading balances…</div>
+              <div className="space-y-3">
+                <div className="skeleton h-16 w-full" />
+                <div className="skeleton h-40 w-full" />
+                <div className="skeleton h-40 w-full" />
+              </div>
             ) : !isConnected ? (
               <div className="text-xs text-slate-400">
                 Connect your wallet to load balances.
@@ -54,8 +60,9 @@ export function DashboardClient() {
                 ) : null}
                 {justUpdated ? (
                   <div className="text-xs text-emerald-400">Updated!</div>
-                ) : null}
+                ) : null} 
                 <PortfolioCard rows={rows} />
+                <PortfolioAllocationChart rows={rows} />
                 <TokenTable rows={rows} />
               </div>
             )}
