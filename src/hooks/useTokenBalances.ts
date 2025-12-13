@@ -79,5 +79,11 @@ export function useTokenBalances() {
     isLoading: Boolean(address) && (eth.isLoading || (chainOk && reads.isLoading)),
     error: eth.error ?? reads.error,
     rows,
+    refetch: async () => {
+      await Promise.all([
+        eth.refetch?.(),
+        chainOk ? reads.refetch?.() : Promise.resolve(),
+      ]);
+    },
   };
 }

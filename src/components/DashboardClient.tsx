@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/Card";
 import { LayoutShell } from "@/components/LayoutShell";
 import { WalletConnectButton } from "@/components/WalletConnectButton";
@@ -14,7 +14,9 @@ import { useIsClient } from "@/hooks/useIsClient";
 
 export function DashboardClient() {
   const isClient = useIsClient();
-  const { isConnected, chainOk, isLoading, error, rows } = useTokenBalances();
+  const [justUpdated, setJustUpdated] = useState(false);
+  const { isConnected, chainOk, isLoading, error, rows, refetch } = useTokenBalances();
+
 
   return (
     <LayoutShell>
@@ -50,6 +52,9 @@ export function DashboardClient() {
                     network to see USDC/DAI.
                   </div>
                 ) : null}
+                {justUpdated ? (
+                  <div className="text-xs text-emerald-400">Updated!</div>
+                ) : null}
                 <PortfolioCard rows={rows} />
                 <TokenTable rows={rows} />
               </div>
@@ -59,7 +64,13 @@ export function DashboardClient() {
 
         <div className="md:col-span-7">
           <Card title="Swap (Sepolia)" subtitle="ETH → USDC (Uniswap V2)">
-            <SwapPanel />
+            <SwapPanel
+                onSwapSuccess={async () => {
+                  await refetch();
+                  setJustUpdated(true);
+                  setTimeout(() => setJustUpdated(false), 1500);
+                }}
+              />
           </Card>
         </div>
 

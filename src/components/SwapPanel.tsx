@@ -1,12 +1,16 @@
 "use client";
- 
+
 import React from "react";
 import { useSwap } from "@/hooks/useSwap";
 import { useIsClient } from "@/hooks/useIsClient";
 
+type SwapPanelProps = {
+  onSwapSuccess?: () => void;
+};
 
-export function SwapPanel() {
+export function SwapPanel({ onSwapSuccess }: SwapPanelProps) {
   const isClient = useIsClient();
+
   const {
     amountEth,
     setAmountEth,
@@ -16,7 +20,7 @@ export function SwapPanel() {
     chainOk,
     isConnected,
     mode,
-  } = useSwap();
+  } = useSwap({ onSuccess: onSwapSuccess });
 
   // Stable SSR + first client render
   if (!isClient) {
@@ -55,15 +59,9 @@ export function SwapPanel() {
   }
 
   const busy = state.status === "checking" || state.status === "pending";
-  const canQuote = Boolean(
-    isConnected && chainOk && mode === "testnet" && !busy
-  );
+  const canQuote = Boolean(isConnected && chainOk && mode === "testnet" && !busy);
   const canSwap = Boolean(
-    isConnected &&
-      chainOk &&
-      mode === "testnet" &&
-      state.status === "ready" &&
-      !busy
+    isConnected && chainOk && mode === "testnet" && state.status === "ready" && !busy
   );
 
   return (
@@ -113,9 +111,7 @@ export function SwapPanel() {
 
       {/* Status */}
       {state.status === "idle" ? (
-        <div className="text-xs text-slate-500">
-          Enter an amount and request a quote.
-        </div>
+        <div className="text-xs text-slate-500">Enter an amount and request a quote.</div>
       ) : state.status === "checking" ? (
         <div className="text-xs text-slate-500">Checking pool & quoting…</div>
       ) : state.status === "ready" ? (
@@ -123,13 +119,9 @@ export function SwapPanel() {
           Quote ready. Min out applied (1% slippage).
         </div>
       ) : state.status === "pending" ? (
-        <div className="text-xs text-slate-500 break-words">
-          Pending: {state.hash}
-        </div>
+        <div className="text-xs text-slate-500 break-words">Pending: {state.hash}</div>
       ) : state.status === "success" ? (
-        <div className="text-xs text-emerald-400 break-words">
-          Success: {state.hash}
-        </div>
+        <div className="text-xs text-emerald-400 break-words">Success: {state.hash}</div>
       ) : (
         <div className="text-xs text-red-400 break-words">{state.message}</div>
       )}

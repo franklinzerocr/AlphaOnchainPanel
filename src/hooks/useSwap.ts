@@ -24,6 +24,10 @@ type SwapState =
   | { status: "success"; hash: `0x${string}` }
   | { status: "error"; message: string };
 
+type UseSwapOptions = {
+  onSuccess?: () => void;
+};
+
 function getErrorMessage(e: unknown): string {
   if (!e) return "Unknown error.";
   if (typeof e === "string") return e;
@@ -31,16 +35,18 @@ function getErrorMessage(e: unknown): string {
 
   if (typeof e === "object") {
     const maybe = e as { message?: unknown; shortMessage?: unknown };
-    if (typeof maybe.shortMessage === "string" && maybe.shortMessage.length > 0)
+    if (typeof maybe.shortMessage === "string" && maybe.shortMessage.length > 0) {
       return maybe.shortMessage;
-    if (typeof maybe.message === "string" && maybe.message.length > 0)
+    }
+    if (typeof maybe.message === "string" && maybe.message.length > 0) {
       return maybe.message;
+    }
   }
 
   return "Unknown error.";
 }
 
-export function useSwap() {
+export function useSwap(options?: UseSwapOptions) {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const publicClient = usePublicClient();
@@ -129,11 +135,14 @@ export function useSwap() {
       });
 
       const out = (amounts as readonly bigint[])[1];
-      const minOut = (out * 99n) / 100n; // fixed 1% slippage
+      const minOut = (out * 99n) / 100n;
 
       setState({ status: "ready", quoteOut: out, minOut });
     } catch (e: unknown) {
-      setState({ status: "error", message: getErrorMessage(e) || "Quote failed." });
+      setState({
+        status: "error",
+        message: getErrorMessage(e) || "Quote failed.",
+      });
     }
   }
 
@@ -163,8 +172,14 @@ export function useSwap() {
 
       await publicClient!.waitForTransactionReceipt({ hash });
       setState({ status: "success", hash });
+
+      // auto-refresh hook for balances (Commit 7)
+      options?.onSuccess?.();
     } catch (e: unknown) {
-      setState({ status: "error", message: getErrorMessage(e) || "Swap failed." });
+      setState({
+        status: "error",
+        message: getErrorMessage(e) || "Swap failed.",
+      });
     }
   }
 

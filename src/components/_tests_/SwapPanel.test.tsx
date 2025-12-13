@@ -23,7 +23,7 @@ import { SwapPanel } from "@/components/SwapPanel";
 
 describe("SwapPanel", () => {
   it("renders buttons", () => {
-    render(<SwapPanel />);
+    render(<SwapPanel onSwapSuccess={vi.fn()} />);
     expect(screen.getByText("Get Quote")).toBeInTheDocument();
     expect(screen.getByText("Swap to USDC")).toBeInTheDocument();
   });
